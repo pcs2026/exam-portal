@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<title>Online Exam</title>
+<style>
+body{font-family:Arial;background:#f2f2f2}
+.container{width:900px;margin:30px auto;background:#fff;padding:20px;border:2px solid #000}
+h2{text-align:center}
+input,textarea{padding:6px;width:320px;margin-bottom:10px}
+textarea{height:60px}
+button{padding:8px 18px;font-weight:bold}
+#loginBox,#detailsBox,#examBox,#resultBox{display:none}
+.question{margin-bottom:15px}
+.warning{color:red;font-weight:bold}
+.timer{font-size:18px;color:red;text-align:right}
+.report{border:1px solid #999;padding:10px;background:#f9f9f9}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<!-- LOGIN -->
+<div id="loginBox">
+<h2>Student Login</h2>
+<p><b>Date:</b> 07-02-2026</p>
+<p><b>Login Time:</b> 12:10 PM – 12:20 PM</p>
+Login ID<br><input id="sid"><br>
+OR DOB<br><input type="date" id="dob"><br>
+<button onclick="doLogin()">Login</button>
+</div>
+
+<!-- STUDENT DETAILS -->
+<div id="detailsBox">
+<h2>Student Details</h2>
+Name<br><input id="sname"><br>
+Father's Name<br><input id="sfname"><br>
+
+Aadhar No (12 Digit)<br>
+<input id="saadhar" maxlength="12"
+oninput="this.value=this.value.replace(/[^0-9]/g,'')"><br>
+
+Mobile No (10 Digit)<br>
+<input id="smobile" maxlength="10"
+oninput="this.value=this.value.replace(/[^0-9]/g,'')"><br>
+
+Address<br><textarea id="saddress"></textarea><br>
+
+<button onclick="startExam()">START EXAM</button>
+</div>
+
+<!-- EXAM -->
+<div id="examBox">
+<div class="timer">⏱ Time Left: <span id="time">05:00</span></div>
+<h2>Exam Started</h2>
+<p class="warning">⚠ Copy / Screenshot / Tab change monitored</p>
+<div id="questions"></div>
+<button onclick="submitExam()">Submit Exam</button>
+</div>
+
+<!-- RESULT -->
+<div id="resultBox">
+<h2>RESULT</h2>
+<p>Name: <b id="rname"></b></p>
+<p>Father's Name: <b id="rfname"></b></p>
+<p>Mobile No: <b id="rmobile"></b></p>
+
+<hr>
+<p>Total Questions: <b id="totalQ"></b></p>
+<p>Attempted: <b id="attemptQ"></b></p>
+<p>Correct: <b id="correctQ"></b></p>
+<p>Wrong: <b id="wrongQ"></b></p>
+<p>Negative Marks: <b id="negativeM"></b></p>
+<p><b>Final Score: <span id="score"></span></b></p>
+
+<p>⏱ Time Taken: <b id="timeTaken"></b></p>
+
+<hr>
+<h3>🚫 Malpractice Report</h3>
+<div class="report">
+Copy Attempts: <b id="copyCount"></b><br>
+Screenshot Attempts: <b id="shotCount"></b><br>
+Tab Change Attempts: <b id="tabCount"></b>
+</div>
+</div>
+
+</div>
+
+<script>
+// ================= SETTINGS =================
+const examDate="2026-02-07";
+const loginStart="12:10";
+const loginEnd="12:20";
+let examDuration=300; // 5 min
+let examTime=examDuration;
+
+// TIME TRACK
+let examStartTime=0;
+let examEndTime=0;
+
+// SECURITY
+let copyTry=0,shotTry=0,tabTry=0,timerInt;
+
+// STUDENTS
+const students=[
+ {id:"STU001",dob:"2000-05-10"},
+ {id:"STU002",dob:"1999-08-15"}
+];
+
+// QUESTIONS
+const qlist=[
+ {q:"सिंधु घाटी सभ्यता में ग्रेट बाथ किस स्थल से संबंधित है?",o:["हड़प्पा","मोहनजोदड़ो","धोलावीरा","लोथल"],a:1},
+ {q:"बुद्ध ने पहला उपदेश कहाँ दिया?",o:["कुशीनगर","राजगृह","सारनाथ","वैशाली"],a:2},
+ {q:"भारतीय संविधान का अनुच्छेद 21 किससे संबंधित है?",o:["समानता","धर्म","जीवन व स्वतंत्रता","शिक्षा"],a:2},
+ {q:"झारखंड विधानसभा की कुल सीटें कितनी हैं?",o:["60","70","81","90"],a:2},
+ {q:"भारत में योजना आयोग कब समाप्त हुआ?",o:["2012","2014","2015","2016"],a:2}
+];
+
+// SHOW LOGIN
+loginBox.style.display="block";
+
+// LOGIN
+function doLogin(){
+ let now=new Date();
+ let today=now.toISOString().slice(0,10);
+ let time=now.toTimeString().slice(0,5);
+
+ if(today!==examDate || time<loginStart || time>loginEnd){
+  alert("❌ Login allowed only on 07-02-2026 (12:10–12:20)");
+  return;
+ }
+
+ let valid=students.find(s=>
+  (sid.value && s.id===sid.value) ||
+  (dob.value && s.dob===dob.value)
+ );
+
+ if(!valid){alert("Invalid Login");return;}
+ loginBox.style.display="none";
+ detailsBox.style.display="block";
+}
+
+// START EXAM
+function startExam(){
+ if(!sname.value||!sfname.value||!saadhar.value||!smobile.value||!saddress.value){
+  alert("❌ सभी विवरण भरें");return;
+ }
+ if(saadhar.value.length!==12){alert("❌ Aadhar 12 digit का होना चाहिए");return;}
+ if(smobile.value.length!==10){alert("❌ Mobile 10 digit का होना चाहिए");return;}
+
+ detailsBox.style.display="none";
+ examBox.style.display="block";
+
+ examStartTime = new Date().getTime(); // ⏱ start time
+
+ loadQuestions();
+ startTimer();
+ enableSecurity();
+}
+
+// LOAD QUESTIONS
+function loadQuestions(){
+ let html="";
+ qlist.forEach((q,i)=>{
+  html+=`<div class="question"><b>Q${i+1}. ${q.q}</b><br>`;
+  q.o.forEach((op,j)=>{
+   html+=`<label><input type="radio" name="q${i}" value="${j}"> ${op}</label><br>`;
+  });
+  html+=`</div>`;
+ });
+ questions.innerHTML=html;
+}
+
+// TIMER
+function startTimer(){
+ timerInt=setInterval(()=>{
+  let m=Math.floor(examTime/60);
+  let s=examTime%60;
+  time.innerText=`${m}:${s<10?'0'+s:s}`;
+  examTime--;
+  if(examTime<0){
+   clearInterval(timerInt);
+   submitExam();
+  }
+ },1000);
+}
+
+// SECURITY
+function enableSecurity(){
+ document.addEventListener("copy",e=>{e.preventDefault();copyTry++;});
+ document.addEventListener("keyup",e=>{if(e.key==="PrintScreen")shotTry++;});
+ document.addEventListener("visibilitychange",()=>{if(document.hidden)tabTry++;});
+ window.addEventListener("blur",()=>tabTry++);
+}
+
+// SUBMIT
+function submitExam(){
+ clearInterval(timerInt);
+ examEndTime = new Date().getTime(); // ⏱ end time
+
+ let usedSeconds = Math.floor((examEndTime - examStartTime)/1000);
+ let usedMin = Math.floor(usedSeconds/60);
+ let usedSec = usedSeconds % 60;
+
+ let attempted=0,correct=0,wrong=0;
+ qlist.forEach((q,i)=>{
+  let a=document.querySelector(`input[name="q${i}"]:checked`);
+  if(a){attempted++;(+a.value===q.a)?correct++:wrong++;}
+ });
+
+ let negative=wrong*0.25;
+ let finalScore=correct-negative;
+
+ examBox.style.display="none";
+ resultBox.style.display="block";
+
+ rname.innerText=sname.value;
+ rfname.innerText=sfname.value;
+ rmobile.innerText=smobile.value;
+
+ totalQ.innerText=qlist.length;
+ attemptQ.innerText=attempted;
+ correctQ.innerText=correct;
+ wrongQ.innerText=wrong;
+ negativeM.innerText=negative;
+ score.innerText=finalScore;
+
+ timeTaken.innerText = `${usedMin} min ${usedSec} sec`;
+
+ copyCount.innerText=copyTry;
+ shotCount.innerText=shotTry;
+ tabCount.innerText=tabTry;
+}
+</script>
+
+</body>
+</html>

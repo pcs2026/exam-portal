@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>School Result System</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+@page{
+    size:A4;
+    margin:0;
+}
+body{
+    margin:0;
+    font-family:Arial;
+    background:#ccc;
+}
+
+/* ===== LOGIN AREA ===== */
+.input-box{
+    width:100%;
+    padding:15px;
+    background:#fff;
+    text-align:center;
+}
+input, select{
+    padding:8px;
+    margin:5px;
+}
+button{
+    padding:10px 20px;
+    margin:5px;
+    border:none;
+    color:#fff;
+    cursor:pointer;
+}
+.view{background:green;}
+.download{background:green;}
+.print{background:#007bff;}
+
+/* ===== RESULT PAGE ===== */
+#result{
+    width:210mm;
+    height:297mm;
+    background:#fff;
+    margin:auto;
+    display:none;
+    box-sizing:border-box;
+    padding:20mm;
+}
+.school{
+    text-align:center;
+    font-size:24px;
+    font-weight:bold;
+}
+.sub{
+    text-align:center;
+    font-size:14px;
+    margin-bottom:10px;
+}
+.top{
+    display:flex;
+    justify-content:space-between;
+}
+.photo{
+    width:35mm;
+    height:45mm;
+    border:1px solid #000;
+    text-align:center;
+    font-size:12px;
+    line-height:45mm;
+}
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+th,td{
+    border:1px solid #000;
+    padding:8px;
+    text-align:center;
+}
+.footer{
+    margin-top:40px;
+    display:flex;
+    justify-content:space-between;
+}
+
+/* ===== PRINT ===== */
+@media print{
+    .no-print{display:none !important;}
+    body *{visibility:hidden;}
+    #result, #result *{visibility:visible;}
+    #result{position:absolute;top:0;left:0;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div class="input-box no-print">
+    <b>Class 2 Result</b><br><br>
+
+    Roll No:
+    <select id="roll">
+        <option value="">Select</option>
+        <script>
+            for(let i=1;i<=10;i++)
+                document.write(`<option value="${i}">${i}</option>`);
+        </script>
+    </select>
+
+    Date of Birth:
+    <input type="date" id="dob">
+
+    <button class="view" onclick="viewResult()">View Result</button>
+</div>
+
+<!-- RESULT -->
+<div id="result"></div>
+
+<script>
+/* ===== STUDENT DATA (DOB AS PASSWORD) ===== */
+const students={
+1:{dob:"2016-01-05",name:"Student 1"},
+2:{dob:"2016-02-10",name:"Student 2"},
+3:{dob:"2016-03-15",name:"Student 3"},
+4:{dob:"2016-04-20",name:"Student 4"},
+5:{dob:"2016-05-25",name:"Student 5"},
+6:{dob:"2016-06-30",name:"Student 6"},
+7:{dob:"2016-07-12",name:"Student 7"},
+8:{dob:"2016-08-18",name:"Student 8"},
+9:{dob:"2016-09-22",name:"Student 9"},
+10:{dob:"2016-10-28",name:"Student 10"}
+};
+
+let currentRoll=0;
+
+function viewResult(){
+    let r=document.getElementById("roll").value;
+    let d=document.getElementById("dob").value;
+
+    if(!r || !d){
+        alert("Roll No aur Date of Birth dono required hai");
+        return;
+    }
+
+    if(students[r].dob !== d){
+        alert("Invalid Date of Birth");
+        return;
+    }
+
+    currentRoll=r;
+    document.getElementById("result").style.display="block";
+
+    document.getElementById("result").innerHTML=`
+    <div class="school">DAV PUBLIC SCHOOL</div>
+    <div class="sub">Annual Examination Result 2024–25</div>
+
+    <div class="top">
+        <div>
+            <p><b>Name:</b> ${students[r].name}</p>
+            <p><b>Class:</b> 2</p>
+            <p><b>Roll No:</b> ${r}</p>
+            <p><b>Date of Birth:</b> ${d}</p>
+            <p><b>Father's Name:</b> Mr. ABC</p>
+            <p><b>Mother's Name:</b> Mrs. XYZ</p>
+        </div>
+        <div class="photo">Photo</div>
+    </div>
+
+    <table>
+        <tr><th>Subject</th><th>Full Marks</th><th>Marks</th></tr>
+        <tr><td>Hindi</td><td>100</td><td>85</td></tr>
+        <tr><td>English</td><td>100</td><td>88</td></tr>
+        <tr><td>Maths</td><td>100</td><td>90</td></tr>
+        <tr><td>EVS</td><td>100</td><td>87</td></tr>
+        <tr><th>Total</th><th>400</th><th>350</th></tr>
+    </table>
+
+    <div class="footer">
+        <div>Class Teacher</div>
+        <div>Principal</div>
+    </div>
+
+    <div class="no-print" style="text-align:center;margin-top:20px;">
+        <button class="download" onclick="downloadPDF()">Download PDF</button>
+        <button class="print" onclick="window.print()">Print</button>
+    </div>
+    `;
+}
+
+function downloadPDF(){
+    const {jsPDF}=window.jspdf;
+    let pdf=new jsPDF("p","mm","a4");
+    pdf.text("DAV PUBLIC SCHOOL",105,20,null,null,"center");
+    pdf.text(`Class 2 Result - Roll ${currentRoll}`,105,30,null,null,"center");
+    pdf.save(`Result_Roll_${currentRoll}.pdf`);
+}
+</script>
+
+</body>
+</html>

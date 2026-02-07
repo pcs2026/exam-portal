@@ -90,8 +90,8 @@ Tab Change Attempts: <b id="tabCount"></b>
 <script>
 // ================= SETTINGS =================
 const examDate="2026-02-07";
-const loginStart="3:00";
-const loginEnd="4:15";
+const loginStart="3:00 PM";
+const loginEnd="4:15 PM";
 let examDuration=300; // 5 min
 let examTime=examDuration;
 
@@ -174,7 +174,7 @@ function doLogin(){
  let time=now.toTimeString().slice(0,5);
 
  if(today!==examDate || time<loginStart || time>loginEnd){
-  alert("❌ Login allowed only on 07-02-2026 (3:00–4:15)");
+  alert("❌ Login allowed only on 07-02-2026 (3:00 PM–4:15PM)");
   return;
  }
 
@@ -283,6 +283,7 @@ function submitExam(){
 
 </body>
 </html>
+
 
 
 

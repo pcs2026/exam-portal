@@ -25,7 +25,7 @@ button{padding:8px 18px;font-weight:bold}
 <div id="loginBox">
 <h2>Student Login</h2>
 <p><b>Date:</b> 07-02-2026</p>
-<p><b>Login Time:</b> 12:10 PM – 12:20 PM</p>
+<p><b>Login Time:</b> 03:55 PM – 04:15 PM</p>
 Login ID<br><input id="sid"><br>
 OR DOB<br><input type="date" id="dob"><br>
 <button onclick="doLogin()">Login</button>
@@ -90,8 +90,8 @@ Tab Change Attempts: <b id="tabCount"></b>
 <script>
 // ================= SETTINGS =================
 const examDate="2026-02-07";
-const loginStart="12:10";
-const loginEnd="12:20";
+const loginStart="03:55";
+const loginEnd="04:15";
 let examDuration=300; // 5 min
 let examTime=examDuration;
 
@@ -174,7 +174,7 @@ function doLogin(){
  let time=now.toTimeString().slice(0,5);
 
  if(today!==examDate || time<loginStart || time>loginEnd){
-  alert("❌ Login allowed only on 07-02-2026 (12:10–12:20)");
+  alert("❌ Login allowed only on 07-02-2026 (03:55–04:15)");
   return;
  }
 
@@ -283,4 +283,5 @@ function submitExam(){
 
 </body>
 </html>
+
 

@@ -9,11 +9,11 @@
 <style>
 /* ---------- PAGE SETUP ---------- */
 @page{
-  size:A4 portrait;
-  margin:15mm;
+  size: A4 portrait;
+  margin: 12mm;
 }
 body{
-  font-family:Arial;
+  font-family: Arial, sans-serif;
   background:#eaeef3;
   margin:0;
 }
@@ -45,12 +45,12 @@ body{
 #admit,#verify{display:none}
 
 .card{
-  width:180mm;
-  min-height:260mm;
-  margin:10px auto;
+  width: 100%;
+  min-height: 270mm;
   background:#fff;
   padding:10mm;
   border:2px solid #000;
+  box-sizing:border-box;
 }
 
 .header{text-align:center}
@@ -109,7 +109,7 @@ th,td{
 
 /* ---------- VERIFICATION PAGE ---------- */
 .verifyBox{
-  width:120mm;
+  width: 140mm;
   margin:40mm auto;
   background:#fff;
   padding:15mm;
@@ -142,6 +142,7 @@ th,td{
 <div class="login" id="login">
   <h3>DAV PUBLIC SCHOOL</h3>
   <input id="roll" placeholder="Enter Roll Number">
+  <input id="sname" placeholder="Enter Student Name">
   <button onclick="generate()">View Admit Card</button>
 </div>
 
@@ -156,6 +157,7 @@ th,td{
 
 <div class="main">
 <div class="left">
+  <p><b>Student Name:</b> <span id="name"></span></p>
   <p><b>Roll No:</b> <span id="rno"></span></p>
   <p><b>Father’s Name:</b> Rajesh Kumar</p>
   <p><b>Mother’s Name:</b> Sunita Devi</p>
@@ -197,6 +199,7 @@ th,td{
 <div class="verifyBox">
 <h2>✔ VERIFIED ADMIT CARD</h2>
 
+<p><b>Student Name:</b> <span id="vname"></span></p>
 <p><b>Roll No:</b> <span id="vroll"></span></p>
 <p><b>Father:</b> <span id="vfather"></span></p>
 <p><b>Mother:</b> <span id="vmother"></span></p>
@@ -210,23 +213,27 @@ th,td{
 </div>
 
 <script>
-/* ---------- QR GENERATE ---------- */
 function generate(){
-  let roll=document.getElementById("roll").value.trim();
-  if(!roll){
-    alert("Enter Roll Number");
+  let roll = document.getElementById("roll").value.trim();
+  let sname = document.getElementById("sname").value.trim();
+
+  if(!roll || !sname){
+    alert("Enter Roll Number and Student Name");
     return;
   }
 
   login.style.display="none";
   admit.style.display="block";
-  rno.innerText=roll;
 
-  let baseURL=window.location.origin+window.location.pathname;
+  rno.innerText = roll;
+  name.innerText = sname;
 
-  let params=new URLSearchParams({
+  let baseURL = window.location.origin + window.location.pathname;
+
+  let params = new URLSearchParams({
     verify:1,
     roll:roll,
+    name:sname,
     father:"Rajesh Kumar",
     mother:"Sunita Devi",
     class:"VIII",
@@ -235,7 +242,7 @@ function generate(){
     exam:"English, Hindi, Maths, EVS, Computer"
   }).toString();
 
-  let finalURL=baseURL+"?"+params;
+  let finalURL = baseURL + "?" + params;
 
   qrcode.innerHTML="";
   new QRCode("qrcode",{text:finalURL,width:120,height:120});
@@ -249,6 +256,7 @@ if(p.get("verify")){
   verify.style.display="block";
 
   vroll.innerText=p.get("roll");
+  vname.innerText=p.get("name");
   vfather.innerText=p.get("father");
   vmother.innerText=p.get("mother");
   vclass.innerText=p.get("class");

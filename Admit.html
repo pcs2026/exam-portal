@@ -7,60 +7,131 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <style>
-body{font-family:Arial;background:#eef2f6;margin:0}
+/* ---------- PAGE SETUP ---------- */
+@page{
+  size:A4 portrait;
+  margin:15mm;
+}
+body{
+  font-family:Arial;
+  background:#eaeef3;
+  margin:0;
+}
 
-/* LOGIN */
+/* ---------- LOGIN ---------- */
 .login{
-  width:360px;margin:60px auto;background:#fff;
-  padding:20px;text-align:center;border-radius:6px
+  width:360px;
+  margin:60px auto;
+  background:#fff;
+  padding:20px;
+  text-align:center;
+  border-radius:6px;
 }
-.login h3{color:#003366}
-.login input{width:90%;padding:10px;margin:8px 0}
+.login h3{color:#003366;margin-bottom:10px}
+.login input{
+  width:90%;
+  padding:10px;
+  margin:8px 0;
+}
 .login button{
-  padding:10px 25px;background:#003366;
-  color:#fff;border:none;cursor:pointer
+  padding:10px 25px;
+  background:#003366;
+  color:#fff;
+  border:none;
+  cursor:pointer;
 }
 
-/* ADMIT CARD */
+/* ---------- ADMIT CARD ---------- */
 #admit,#verify{display:none}
+
 .card{
-  width:820px;margin:20px auto;background:#fff;
-  padding:20px;border:2px solid #000
+  width:180mm;
+  min-height:260mm;
+  margin:10px auto;
+  background:#fff;
+  padding:10mm;
+  border:2px solid #000;
 }
+
 .header{text-align:center}
-.main{display:flex;margin-top:15px}
-.left{width:60%;font-size:14px}
+.header h2{margin:4px 0}
+.header h3{margin:2px 0}
+
+.main{
+  display:flex;
+  margin-top:10px;
+}
+.left{
+  width:60%;
+  font-size:14px;
+}
 .left p{margin:6px 0}
-.right{width:40%;text-align:center}
+
+.right{
+  width:40%;
+  text-align:center;
+}
 
 .photo{
-  width:130px;height:160px;border:1px solid #000;
-  margin:auto
+  width:130px;
+  height:160px;
+  border:1px solid #000;
+  margin:auto;
 }
-.photo img{width:100%;height:100%;object-fit:cover}
+.photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
 
 .qrbox{
-  margin-top:10px;border:1px solid #000;
-  padding:10px;display:inline-block
+  margin-top:10px;
+  border:1px solid #000;
+  padding:8px;
+  display:inline-block;
 }
-#qrcode{display:flex;justify-content:center}
+#qrcode{
+  display:flex;
+  justify-content:center;
+}
 
 table{
-  width:100%;border-collapse:collapse;
-  margin-top:15px;font-size:13px
+  width:100%;
+  border-collapse:collapse;
+  margin-top:12px;
+  font-size:13px;
 }
-th,td{border:1px solid #000;padding:6px;text-align:center}
+th,td{
+  border:1px solid #000;
+  padding:6px;
+  text-align:center;
+}
 
-/* VERIFICATION */
+/* ---------- VERIFICATION PAGE ---------- */
 .verifyBox{
-  width:420px;margin:60px auto;background:#fff;
-  padding:20px;border:2px solid green
+  width:120mm;
+  margin:40mm auto;
+  background:#fff;
+  padding:15mm;
+  border:2px solid green;
 }
-.verifyBox h2{text-align:center;color:green}
+.verifyBox h2{
+  text-align:center;
+  color:green;
+}
 .verifyBox p{margin:6px 0}
 .valid{
-  background:#e6ffe6;padding:10px;
-  text-align:center;font-weight:bold
+  background:#e6ffe6;
+  padding:10px;
+  text-align:center;
+  font-weight:bold;
+  margin-top:10px;
+}
+
+/* ---------- PRINT ---------- */
+@media print{
+  body{background:#fff}
+  .login{display:none}
 }
 </style>
 </head>
@@ -105,7 +176,7 @@ th,td{border:1px solid #000;padding:6px;text-align:center}
 </div>
 </div>
 
-<h3 align="center">EXAMINATION SCHEDULE</h3>
+<h3 style="text-align:center;margin-top:10px">EXAMINATION SCHEDULE</h3>
 
 <table>
 <tr>
@@ -124,32 +195,34 @@ th,td{border:1px solid #000;padding:6px;text-align:center}
 <!-- VERIFICATION PAGE -->
 <div id="verify">
 <div class="verifyBox">
-  <h2>✔ VERIFIED ADMIT CARD</h2>
+<h2>✔ VERIFIED ADMIT CARD</h2>
 
-  <p><b>Roll No:</b> <span id="vroll"></span></p>
-  <p><b>Father:</b> <span id="vfather"></span></p>
-  <p><b>Mother:</b> <span id="vmother"></span></p>
-  <p><b>Class:</b> <span id="vclass"></span></p>
-  <p><b>Section:</b> <span id="vsection"></span></p>
-  <p><b>Gender:</b> <span id="vgender"></span></p>
-  <p><b>Subjects:</b> <span id="vexam"></span></p>
+<p><b>Roll No:</b> <span id="vroll"></span></p>
+<p><b>Father:</b> <span id="vfather"></span></p>
+<p><b>Mother:</b> <span id="vmother"></span></p>
+<p><b>Class:</b> <span id="vclass"></span></p>
+<p><b>Section:</b> <span id="vsection"></span></p>
+<p><b>Gender:</b> <span id="vgender"></span></p>
+<p><b>Subjects:</b> <span id="vexam"></span></p>
 
-  <div class="valid">This Admit Card is VALID</div>
+<div class="valid">This Admit Card is VALID</div>
 </div>
 </div>
 
 <script>
-/* ---------- ADMIT CARD QR GENERATE ---------- */
+/* ---------- QR GENERATE ---------- */
 function generate(){
   let roll=document.getElementById("roll").value.trim();
-  if(!roll){alert("Enter Roll Number");return;}
+  if(!roll){
+    alert("Enter Roll Number");
+    return;
+  }
 
-  document.getElementById("login").style.display="none";
-  document.getElementById("admit").style.display="block";
-  document.getElementById("rno").innerText=roll;
+  login.style.display="none";
+  admit.style.display="block";
+  rno.innerText=roll;
 
-  // SAME FILE URL
-  let baseURL = window.location.origin + window.location.pathname;
+  let baseURL=window.location.origin+window.location.pathname;
 
   let params=new URLSearchParams({
     verify:1,
@@ -164,16 +237,16 @@ function generate(){
 
   let finalURL=baseURL+"?"+params;
 
-  document.getElementById("qrcode").innerHTML="";
-  new QRCode("qrcode",{text:finalURL,width:130,height:130});
+  qrcode.innerHTML="";
+  new QRCode("qrcode",{text:finalURL,width:120,height:120});
 }
 
-/* ---------- VERIFICATION MODE ---------- */
+/* ---------- VERIFY MODE ---------- */
 let p=new URLSearchParams(window.location.search);
 if(p.get("verify")){
-  document.getElementById("login").style.display="none";
-  document.getElementById("admit").style.display="none";
-  document.getElementById("verify").style.display="block";
+  login.style.display="none";
+  admit.style.display="none";
+  verify.style.display="block";
 
   vroll.innerText=p.get("roll");
   vfather.innerText=p.get("father");

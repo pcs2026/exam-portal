@@ -67,16 +67,18 @@ body{
 }
 .left p{margin:6px 0}
 
+/* RIGHT SIDE */
 .right{
   width:40%;
-  text-align:center;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
 }
 
 .photo{
   width:130px;
   height:160px;
   border:1px solid #000;
-  margin:auto;
 }
 .photo img{
   width:100%;
@@ -85,16 +87,17 @@ body{
 }
 
 .qrbox{
-  margin-top:10px;
   border:1px solid #000;
-  padding:8px;
-  display:inline-block;
+  padding:6px;
+  text-align:center;
 }
 #qrcode{
   display:flex;
   justify-content:center;
+  margin-bottom:4px;
 }
 
+/* TABLE */
 table{
   width:100%;
   border-collapse:collapse;
@@ -165,14 +168,18 @@ th,td{
 </div>
 
 <div class="right">
+
+  <!-- QR CODE LEFT -->
+  <div class="qrbox">
+    <div id="qrcode"></div>
+    <small>Scan for<br>Verification</small>
+  </div>
+
+  <!-- PHOTO RIGHT -->
   <div class="photo">
     <img src="https://via.placeholder.com/130x160">
   </div>
 
-  <div class="qrbox">
-    <div id="qrcode"></div>
-    <small>Scan for Online Verification</small>
-  </div>
 </div>
 </div>
 
@@ -210,7 +217,6 @@ th,td{
 </div>
 
 <script>
-/* ---------- QR GENERATE ---------- */
 function generate(){
   let roll=document.getElementById("roll").value.trim();
   if(!roll){
@@ -238,10 +244,9 @@ function generate(){
   let finalURL=baseURL+"?"+params;
 
   qrcode.innerHTML="";
-  new QRCode("qrcode",{text:finalURL,width:120,height:120});
+  new QRCode("qrcode",{text:finalURL,width:110,height:110});
 }
 
-/* ---------- VERIFY MODE ---------- */
 let p=new URLSearchParams(window.location.search);
 if(p.get("verify")){
   login.style.display="none";

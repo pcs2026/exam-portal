@@ -1,251 +1,276 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Admit Card - Exam Schedule</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<title>DAV Public School – Admit Card</title>
 
 <style>
-/* =================== PAGE SETUP =================== */
-@page {
-    size: A4 portrait;
-    margin: 10mm; /* uniform margin */
-}
-
-@media print {
-    body {
-        background:#fff;
-    }
-    .no-print {
-        display:none !important;
-    }
-}
-
-/* =================== BODY & CARD =================== */
 body{
-    font-family: Arial, sans-serif;
-    margin:0;
-    padding:0;
-    background:#eee;
+  font-family:Arial;
+  background:#e6e6e6;
 }
 
-.admit-card{
-    width:100%;
-    max-width:800px;
-    margin:auto;
-    background:#fff;
-    border:3px solid #000;
-    padding:10px;
-    box-sizing:border-box;
+.container{
+  width:170mm;
+  min-height:257mm;
+  background:#fff;
+  margin:10px auto;
+  padding:10mm;
+  border:2px solid #000;
 }
 
-.box{
-    border:1.5px solid #000;
-    padding:6px;
-    margin-bottom:6px;
+/* LOGIN INTERFACE */
+.loginWrapper{
+  display:flex;
+  border:2px solid #000;
 }
 
+/* SCHOOL PANEL */
+.schoolPanel{
+  width:45%;
+  background:#f2f6ff;
+  padding:20px;
+  text-align:center;
+  border-right:2px solid #000;
+}
+.schoolPanel img{
+  width:90px;
+  margin-bottom:10px;
+}
+.schoolPanel h2{
+  margin:6px 0;
+}
+.schoolPanel p{
+  font-size:14px;
+}
+
+/* STUDENT PANEL */
+.studentPanel{
+  width:55%;
+  padding:20px;
+}
+.studentPanel h3{
+  text-align:center;
+}
+.studentPanel input{
+  width:90%;
+  padding:8px;
+  margin:6px 0;
+}
+.studentPanel button{
+  padding:8px 20px;
+  margin-top:10px;
+  font-size:14px;
+}
+
+h2,h3{text-align:center;margin:4px}
+
+/* ADMIT CARD */
 .header{
-    text-align:center;
-    font-weight:bold;
-    font-size:20px;
-    color:#b30000;
+  display:grid;
+  grid-template-columns:90px auto 130px;
+  align-items:center;
 }
-
-.top-section{
-    display:flex;
-    gap:6px;
+.logo{
+  width:80px;
+  height:80px;
+  border:1px solid #000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
 }
-
-.details{ width:60%; }
-
-.detail-row{
-    border:1px solid #000;
-    padding:4px;
-    font-size:14px;
-    margin-bottom:4px;
+.photo{
+  width:120px;
+  height:140px;
+  border:1px solid #000;
 }
-
-.right-box{
-    width:40%;
-    display:flex;
-    gap:6px;
-}
-
-#qrcode{
-    border:1.5px solid #000;
-    padding:4px;
-    width:120px;
-    height:120px;
-}
-
-.photo-box{
-    width:120px;
-    height:150px;
-    border:1.5px solid #000;
-}
-
-.photo-box img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
+.photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
 
 table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:5px;
+  width:100%;
+  border-collapse:collapse;
+  margin-top:6px;
+  font-size:13px;
+}
+td,th{
+  border:1px solid #000;
+  padding:6px;
+}
+.center{text-align:center}
+
+.sign img{
+  width:120px;
+  height:50px;
 }
 
-table th, table td{
-    border:1.5px solid #000;
-    padding:6px;
-    font-size:14px;
-    text-align:center;
-}
-
-.table-title{
-    font-weight:bold;
-    text-align:center;
-    margin-bottom:4px;
-}
-
-.footer{
-    display:flex;
-    justify-content:space-between;
-    gap:6px;
-}
-
-.footer .box{
-    width:49%;
-    height:50px;
-    text-align:center;
+.actionBtn button{
+  padding:8px 16px;
+  margin:6px;
 }
 
 .terms{
-    font-size:12px;
+  font-size:12px;
+  margin-top:10px;
 }
 
-.terms ul{
-    margin-left:18px;
-}
-
-/* BUTTONS */
-.actions{
-    text-align:center;
-    margin-top:10px;
-}
-.actions button{
-    padding:8px 14px;
-    font-size:14px;
-    cursor:pointer;
+/* PRINT / PDF */
+@media print{
+  body{background:#fff}
+  #loginBox,.actionBtn{display:none}
+  .container{border:none;margin:0;padding:0}
+  @page{size:A4 portrait;margin:15mm}
 }
 </style>
 </head>
 
 <body>
 
-<div class="admit-card">
+<div class="container">
 
-    <!-- HEADER -->
-    <div class="box header">
-        DAV PUBLIC SCHOOL, PAGAR<br>
-        Session– 2016-17<br>
-        ADMISSION CARD
-    </div>
+<!-- LOGIN PAGE -->
+<div id="loginBox" class="loginWrapper">
 
-    <!-- TOP SECTION -->
-    <div class="top-section">
+  <!-- SCHOOL INFO -->
+  <div class="schoolPanel">
+    <img src="logo.png" alt="School Logo">
+    <h2>DAV PUBLIC SCHOOL</h2>
+    <p>
+      Pagar, Keredari, Hazaribagh<br>
+      <b>Affiliated to CBSE</b><br>
+      Session 2025–26
+    </p>
+    <p><b>Online Admit Card Portal</b></p>
+  </div>
 
-        <div class="details box">
-            <div class="detail-row"><b>Roll Code:</b> 21020</div>
-            <div class="detail-row"><b>Udis code:</b> 11203</div>
-            <div class="detail-row"><b>Admit Card No:</b> S2003403</div>
-            <div class="detail-row"><b>Candidate Name:</b> DINESH KUMAR MAHTO</div>
-            <div class="detail-row"><b>Father's Name:</b> TUKAN MAHTO</div>
-            <div class="detail-row"><b>Mother's Name:</b> MALKHOYA DEVI</div>
-            <div class="detail-row"><b>Category:</b> REGULAR</div>
-        </div>
+  <!-- STUDENT LOGIN -->
+  <div class="studentPanel">
+    <h3>Student Login</h3>
 
-        <div class="right-box box">
-            <div id="qrcode"></div>
-            <div class="photo-box">
-                <img src="photo.jpg" alt="Student Photo">
-            </div>
-        </div>
-    </div>
+    Roll Number<br>
+    <input id="roll" placeholder="Enter Roll No">
 
-    <!-- EXAM SCHEDULE -->
-    <div class="box">
-        <div class="table-title">EXAM SCHEDULE</div>
-        <table>
-            <tr>
-                <th>Date</th>
-                <th>Day</th>
-                <th>Subject</th>
-                <th>Time</th>
-            </tr>
-            <tr><td>17.02.2016</td><td>Wednesday</td><td>Optional-II - ECO</td><td>2:00 PM – 5:15 PM</td></tr>
-            <tr><td>18.02.2016</td><td>Thursday</td><td>Core Language - ENA</td><td>2:00 PM – 5:15 PM</td></tr>
-            <tr><td>25.02.2016</td><td>Thursday</td><td>Compulsory-I - PHY</td><td>2:00 PM – 5:15 PM</td></tr>
-            <tr><td>27.02.2016</td><td>Saturday</td><td>Compulsory-II - CHE</td><td>2:00 PM – 5:15 PM</td></tr>
-            <tr><td>01.03.2016</td><td>Tuesday</td><td>Optional-I - MAT</td><td>2:00 PM – 5:15 PM</td></tr>
-        </table>
-    </div>
+    Date of Birth<br>
+    <input type="date" id="dob">
 
-    <!-- TERMS -->
-    <div class="box terms">
-        <b>Exam Terms & Conditions:</b>
-        <ul>
-            <li>Admit card compulsory for entry.</li>
-            <li>Electronic devices strictly prohibited.</li>
-            <li>Reporting time: 1:30 PM.</li>
-            <li>No entry after exam starts.</li>
-        </ul>
-    </div>
-
-    <!-- FOOTER -->
-    <div class="footer">
-        <div class="box">Seal & Signature of Principal</div>
-        <div class="box">Secretary</div>
-    </div>
-
-    <!-- ACTION BUTTONS -->
-    <div class="actions no-print">
-        <button onclick="window.print()">🖨 Print Admit Card</button>
-        <button onclick="downloadPDF()">⬇ Download PDF</button>
-    </div>
+    <br>
+    <button onclick="login()">View Admit Card</button>
+  </div>
 
 </div>
 
+<!-- ADMIT CARD -->
+<div id="card" style="display:none">
+
+<div class="header">
+  <div class="logo">LOGO</div>
+
+  <div class="center">
+    <h2>DAV PUBLIC SCHOOL</h2>
+    <div style="font-size:13px;">Affiliated to CBSE</div>
+    <h3>ADMIT CARD (2025–26)</h3>
+  </div>
+
+  <div class="photo">
+    <img id="stuPhoto">
+  </div>
+</div>
+
+<table>
+<tr>
+  <td><b>Roll No:</b> <span id="rno"></span></td>
+  <td><b>Class:</b> I</td>
+</tr>
+<tr>
+  <td><b>Student Name:</b> <span id="rname"></span></td>
+  <td><b>Section:</b> <span id="rsec"></span></td>
+</tr>
+<tr>
+  <td><b>Father’s Name:</b> <span id="rfather"></span></td>
+  <td><b>Mother’s Name:</b> <span id="rmother"></span></td>
+</tr>
+<tr>
+  <td><b>Date of Birth:</b> <span id="db"></span></td>
+  <td><b>Gender:</b> Male</td>
+</tr>
+<tr>
+  <td colspan="2"><b>Exam Centre:</b> DAV Public School Campus</td>
+</tr>
+</table>
+
+<h3>EXAMINATION SCHEDULE</h3>
+<table>
+<tr>
+  <th>S.No</th><th>Date</th><th>Day</th><th>Subject</th><th>Time</th>
+</tr>
+<tr><td>1</td><td>15-03-2026</td><td>Mon</td><td>English</td><td>10:00–11:30</td></tr>
+<tr><td>2</td><td>16-03-2026</td><td>Tue</td><td>Mathematics</td><td>10:00–11:30</td></tr>
+<tr><td>3</td><td>17-03-2026</td><td>Wed</td><td>EVS</td><td>10:00–11:30</td></tr>
+</table>
+
+<!-- TERMS -->
+<div class="terms">
+<h4 class="center">IMPORTANT INSTRUCTIONS / TERMS & CONDITIONS</h4>
+<ul>
+  <li>Student must bring this Admit Card on all examination days.</li>
+  <li>Student should reach the examination centre at least 30 minutes before exam time.</li>
+  <li>No electronic gadgets (mobile, smart watch, calculator, etc.) are allowed.</li>
+  <li>Only pencil / blue or black ball pen is permitted.</li>
+  <li>Misconduct or unfair means will lead to cancellation of examination.</li>
+  <li>Student must follow all instructions given by invigilators.</li>
+  <li>The school authority reserves the right to make any changes if required.</li>
+</ul>
+</div>
+
+<table>
+<tr>
+  <td class="center sign">
+    <img src="sign/teacher.png"><br>Class Teacher
+  </td>
+  <td class="center sign">
+    <img src="sign/principal.png"><br>Principal
+  </td>
+</tr>
+</table>
+
+<div class="center actionBtn">
+  <button onclick="window.print()">🖨 Print</button>
+  <button onclick="window.print()">📄 Download PDF</button>
+</div>
+
+</div>
+</div>
+
 <script>
-const studentData={
-    name:"DINESH KUMAR MAHTO",
-    rollCode:"21020",
-    rollNo:"11203",
-    regNo:"21020-RS-1221-2014"
-};
+const students=[
+ {roll:"101",dob:"2018-01-10",name:"Aarav Kumar",father:"Rajesh Kumar",mother:"Sunita Devi",sec:"A"},
+ {roll:"102",dob:"2018-02-11",name:"Ananya Singh",father:"Vijay Singh",mother:"Rekha Singh",sec:"A"}
+];
 
-// QR Code Generation
-new QRCode(document.getElementById("qrcode"),{
-    text:JSON.stringify(studentData),
-    width:110,
-    height:110
-});
+function login(){
+  const r = roll.value.trim();
+  const d = dob.value;
 
-// PDF Download
-function downloadPDF(){
-    const { jsPDF } = window.jspdf;
-    const pdf=new jsPDF("p","mm","a4");
-    pdf.html(document.querySelector(".admit-card"),{
-        callback:function(doc){
-            doc.save("Admit-Card.pdf");
-        },
-        x:10,
-        y:10
-    });
+  const s = students.find(x => x.roll === r && x.dob === d);
+  if(!s){
+    alert("Invalid Roll No or Date of Birth");
+    return;
+  }
+
+  loginBox.style.display="none";
+  card.style.display="block";
+
+  rno.textContent = s.roll;
+  rname.textContent = s.name;
+  rfather.textContent = s.father;
+  rmother.textContent = s.mother;
+  rsec.textContent = s.sec;
+  db.textContent = s.dob;
+
+  stuPhoto.src = "photo/" + s.roll + ".jpg";
 }
 </script>
 

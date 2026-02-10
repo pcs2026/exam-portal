@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admit Card - Exam Schedule</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+/* =================== PAGE SETUP =================== */
+@page {
+    size: A4 portrait;
+    margin: 10mm; /* uniform margin */
+}
+
+@media print {
+    body {
+        background:#fff;
+    }
+    .no-print {
+        display:none !important;
+    }
+}
+
+/* =================== BODY & CARD =================== */
+body{
+    font-family: Arial, sans-serif;
+    margin:0;
+    padding:0;
+    background:#eee;
+}
+
+.admit-card{
+    width:100%;
+    max-width:800px;
+    margin:auto;
+    background:#fff;
+    border:3px solid #000;
+    padding:10px;
+    box-sizing:border-box;
+}
+
+.box{
+    border:1.5px solid #000;
+    padding:6px;
+    margin-bottom:6px;
+}
+
+.header{
+    text-align:center;
+    font-weight:bold;
+    font-size:20px;
+    color:#b30000;
+}
+
+.top-section{
+    display:flex;
+    gap:6px;
+}
+
+.details{ width:60%; }
+
+.detail-row{
+    border:1px solid #000;
+    padding:4px;
+    font-size:14px;
+    margin-bottom:4px;
+}
+
+.right-box{
+    width:40%;
+    display:flex;
+    gap:6px;
+}
+
+#qrcode{
+    border:1.5px solid #000;
+    padding:4px;
+    width:120px;
+    height:120px;
+}
+
+.photo-box{
+    width:120px;
+    height:150px;
+    border:1.5px solid #000;
+}
+
+.photo-box img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:5px;
+}
+
+table th, table td{
+    border:1.5px solid #000;
+    padding:6px;
+    font-size:14px;
+    text-align:center;
+}
+
+.table-title{
+    font-weight:bold;
+    text-align:center;
+    margin-bottom:4px;
+}
+
+.footer{
+    display:flex;
+    justify-content:space-between;
+    gap:6px;
+}
+
+.footer .box{
+    width:49%;
+    height:50px;
+    text-align:center;
+}
+
+.terms{
+    font-size:12px;
+}
+
+.terms ul{
+    margin-left:18px;
+}
+
+/* BUTTONS */
+.actions{
+    text-align:center;
+    margin-top:10px;
+}
+.actions button{
+    padding:8px 14px;
+    font-size:14px;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="admit-card">
+
+    <!-- HEADER -->
+    <div class="box header">
+        DAV PUBLIC SCHOOL, PAGAR<br>
+        Session– 2016-17<br>
+        ADMISSION CARD
+    </div>
+
+    <!-- TOP SECTION -->
+    <div class="top-section">
+
+        <div class="details box">
+            <div class="detail-row"><b>Roll Code:</b> 21020</div>
+            <div class="detail-row"><b>Udis code:</b> 11203</div>
+            <div class="detail-row"><b>Admit Card No:</b> S2003403</div>
+            <div class="detail-row"><b>Candidate Name:</b> DINESH KUMAR MAHTO</div>
+            <div class="detail-row"><b>Father's Name:</b> TUKAN MAHTO</div>
+            <div class="detail-row"><b>Mother's Name:</b> MALKHOYA DEVI</div>
+            <div class="detail-row"><b>Category:</b> REGULAR</div>
+        </div>
+
+        <div class="right-box box">
+            <div id="qrcode"></div>
+            <div class="photo-box">
+                <img src="photo.jpg" alt="Student Photo">
+            </div>
+        </div>
+    </div>
+
+    <!-- EXAM SCHEDULE -->
+    <div class="box">
+        <div class="table-title">EXAM SCHEDULE</div>
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Day</th>
+                <th>Subject</th>
+                <th>Time</th>
+            </tr>
+            <tr><td>17.02.2016</td><td>Wednesday</td><td>Optional-II - ECO</td><td>2:00 PM – 5:15 PM</td></tr>
+            <tr><td>18.02.2016</td><td>Thursday</td><td>Core Language - ENA</td><td>2:00 PM – 5:15 PM</td></tr>
+            <tr><td>25.02.2016</td><td>Thursday</td><td>Compulsory-I - PHY</td><td>2:00 PM – 5:15 PM</td></tr>
+            <tr><td>27.02.2016</td><td>Saturday</td><td>Compulsory-II - CHE</td><td>2:00 PM – 5:15 PM</td></tr>
+            <tr><td>01.03.2016</td><td>Tuesday</td><td>Optional-I - MAT</td><td>2:00 PM – 5:15 PM</td></tr>
+        </table>
+    </div>
+
+    <!-- TERMS -->
+    <div class="box terms">
+        <b>Exam Terms & Conditions:</b>
+        <ul>
+            <li>Admit card compulsory for entry.</li>
+            <li>Electronic devices strictly prohibited.</li>
+            <li>Reporting time: 1:30 PM.</li>
+            <li>No entry after exam starts.</li>
+        </ul>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <div class="box">Seal & Signature of Principal</div>
+        <div class="box">Secretary</div>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="actions no-print">
+        <button onclick="window.print()">🖨 Print Admit Card</button>
+        <button onclick="downloadPDF()">⬇ Download PDF</button>
+    </div>
+
+</div>
+
+<script>
+const studentData={
+    name:"DINESH KUMAR MAHTO",
+    rollCode:"21020",
+    rollNo:"11203",
+    regNo:"21020-RS-1221-2014"
+};
+
+// QR Code Generation
+new QRCode(document.getElementById("qrcode"),{
+    text:JSON.stringify(studentData),
+    width:110,
+    height:110
+});
+
+// PDF Download
+function downloadPDF(){
+    const { jsPDF } = window.jspdf;
+    const pdf=new jsPDF("p","mm","a4");
+    pdf.html(document.querySelector(".admit-card"),{
+        callback:function(doc){
+            doc.save("Admit-Card.pdf");
+        },
+        x:10,
+        y:10
+    });
+}
+</script>
+
+</body>
+</html>

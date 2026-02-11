@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DAV Public School – Admit Card</title>
+
+<!-- QR Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+
+<style>
+body{font-family:Arial;background:#e6e6e6}
+.container{
+  width:170mm;min-height:257mm;background:#fff;
+  margin:10px auto;padding:10mm;border:2px solid #000
+}
+h2,h3,h4{text-align:center;margin:4px}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+td,th{border:1px solid #000;padding:6px}
+.center{text-align:center}
+
+/* LOGIN */
+.loginWrapper{display:flex;border:2px solid #000}
+.schoolPanel{width:45%;background:#f2f6ff;padding:20px;text-align:center;border-right:2px solid #000}
+.studentPanel{width:55%;padding:20px}
+
+/* HEADER */
+.header{
+  display:grid;
+  grid-template-columns:90px auto 130px;
+  align-items:center
+}
+.logo{width:80px;height:80px;border:1px solid #000;
+display:flex;align-items:center;justify-content:center}
+.photo{width:120px;height:140px;border:1px solid #000}
+.photo img{width:100%;height:100%;object-fit:cover}
+
+/* BUTTON */
+.actionBtn button{padding:8px 16px;margin:6px}
+
+.terms{font-size:12px;margin-top:10px}
+
+@media print{
+  body{background:#fff}
+  #loginBox,.actionBtn{display:none}
+  .container{border:none;margin:0;padding:0}
+  @page{size:A4 portrait;margin:15mm}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- LOGIN -->
+<div id="loginBox" class="loginWrapper">
+  <div class="schoolPanel">
+    <h2>DAV PUBLIC SCHOOL</h2>
+    <p>Pagar, Keredari, Hazaribagh<br><b>Affiliated to CBSE</b></p>
+    <b>Online Admit Card Portal</b>
+  </div>
+  <div class="studentPanel">
+    <h3>Student Login</h3>
+    Roll Number<br>
+    <input id="roll"><br>
+    Date of Birth<br>
+    <input type="date" id="dob"><br><br>
+    <button onclick="login()">View Admit Card</button>
+  </div>
+</div>
+
+<!-- ADMIT CARD -->
+<div id="card" style="display:none">
+
+<div class="header">
+  <div class="logo">LOGO</div>
+  <div class="center">
+    <h2>DAV PUBLIC SCHOOL</h2>
+    <h3>ADMIT CARD (2025–26)</h3>
+  </div>
+  <div class="photo"><img id="stuPhoto"></div>
+</div>
+
+<table>
+<tr>
+  <td><b>Roll No:</b> <span id="rno"></span></td>
+  <td><b>Class:</b> X</td>
+  <td rowspan="4" class="center">
+    <canvas id="qrCode"></canvas><br>
+    <small>Scan for Online Verification</small>
+  </td>
+</tr>
+<tr>
+  <td><b>Student Name:</b> <span id="rname"></span></td>
+  <td><b>Section:</b> <span id="rsec"></span></td>
+</tr>
+<tr>
+  <td><b>Father’s Name:</b> <span id="rfather"></span></td>
+  <td><b>Mother’s Name:</b> <span id="rmother"></span></td>
+</tr>
+<tr>
+  <td><b>DOB:</b> <span id="db"></span></td>
+  <td><b>Gender:</b> <span id="rgender"></span></td>
+</tr>
+</table>
+
+
+<!-- EXAM SCHEDULE -->
+<h3>EXAMINATION SCHEDULE</h3>
+<table>
+<tr>
+  <th>Date</th><th>Day</th><th>Subject</th><th>Time</th>
+</tr>
+<tr>
+  <td>15-03-2026</td><td>Monday</td>
+  <td>English (184)</td><td>10:00 AM – 1:00 PM</td>
+</tr>
+<tr>
+  <td>18-03-2026</td><td>Thursday</td>
+  <td>Science (086)</td><td>10:00 AM – 1:00 PM</td>
+</tr>
+<tr>
+  <td>21-03-2026</td><td>Sunday</td>
+  <td>Mathematics (041)</td><td>10:00 AM – 1:00 PM</td>
+</tr>
+<tr>
+  <td>24-03-2026</td><td>Wednesday</td>
+  <td>Social Science (087)</td><td>10:00 AM – 1:00 PM</td>
+</tr>
+<tr>
+  <td>27-03-2026</td><td>Saturday</td>
+  <td>IT (402)</td><td>10:00 AM – 1:00 PM</td>
+</tr>
+</table>
+
+<!-- TERMS -->
+<div class="terms">
+<h4>EXAM TERMS & CONDITIONS</h4>
+<ul>
+<li>Admit Card & QR verification compulsory.</li>
+<li>Student must report 30 minutes before exam.</li>
+<li>No mobile, smart watch, calculator allowed.</li>
+<li>Only blue/black pen permitted.</li>
+<li>QR Code will be scanned at entry gate.</li>
+<li>Unfair means will cancel examination.</li>
+<li>School authority decision will be final.</li>
+</ul>
+</div>
+
+<div class="actionBtn center">
+  <button onclick="window.print()">🖨 Print</button>
+  <button onclick="downloadPDF()">📄 Download PDF</button>
+</div>
+
+</div>
+</div>
+
+<script>
+const students=[
+ {roll:"101",dob:"2010-01-10",name:"Aarav Kumar",father:"Rajesh Kumar",mother:"Sunita Devi",sec:"A",gender:"Male"},
+ {roll:"102",dob:"2010-02-11",name:"Ananya Singh",father:"Vijay Singh",mother:"Rekha Singh",sec:"A",gender:"Female"}
+];
+
+function login(){
+  const r=roll.value.trim();
+  const d=dob.value;
+  const s=students.find(x=>x.roll===r && x.dob===d);
+  if(!s){alert("Invalid Roll Number or DOB");return;}
+
+  loginBox.style.display="none";
+  card.style.display="block";
+
+  rno.textContent=s.roll;
+  rname.textContent=s.name;
+  rfather.textContent=s.father;
+  rmother.textContent=s.mother;
+  rsec.textContent=s.sec;
+  rgender.textContent=s.gender;
+  db.textContent=s.dob;
+  stuPhoto.src="photo/"+s.roll+".jpg";
+
+  const verifyURL =
+  location.origin + location.pathname +
+  "?verify=1&roll="+s.roll+"&name="+encodeURIComponent(s.name);
+
+  new QRious({
+    element:qrCode,
+    size:120,
+    value:verifyURL
+  });
+}
+
+/* ONLINE QR VERIFY PAGE */
+const p=new URLSearchParams(location.search);
+if(p.get("verify")){
+  document.body.innerHTML=
+  `<div style="text-align:center;margin-top:70px">
+   <h2>✅ STUDENT VERIFIED</h2>
+   <p><b>Roll No:</b> ${p.get("roll")}</p>
+   <p><b>Name:</b> ${p.get("name")}</p>
+   <p>DAV Public School – CBSE</p>
+   <p style="color:green">Online QR Verification Successful</p>
+   </div>`;
+}
+
+function downloadPDF(){window.print();}
+</script>
+
+</body>
+</html>

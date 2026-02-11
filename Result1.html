@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DAV Public School – Result</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+
+<style>
+body{font-family:Arial;background:#e6e6e6}
+.container{
+  width:170mm;min-height:257mm;background:#fff;
+  margin:10px auto;padding:10mm;border:2px solid #000
+}
+h2,h3,h4{text-align:center;margin:4px}
+
+/* ✅ ALL TABLE CENTER ALIGN */
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+  margin-top:6px;
+}
+td,th{
+  border:1px solid #000;
+  padding:5px;
+  text-align:center;   /* ⭐ CENTER */
+}
+
+.center{text-align:center}
+
+/* LOGIN */
+.loginWrapper{display:flex;border:2px solid #000}
+.schoolPanel{
+  width:45%;background:#f2f6ff;padding:20px;
+  text-align:center;border-right:2px solid #000
+}
+.studentPanel{width:55%;padding:20px}
+
+/* HEADER */
+.header{
+  display:grid;
+  grid-template-columns:90px auto;
+  align-items:center
+}
+.logo{
+  width:80px;height:80px;border:1px solid #000;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:bold
+}
+
+/* PHOTO + QR */
+.photoQrBox{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px
+}
+.photoQrBox img{
+  width:95px;height:115px;
+  border:2px solid #000;
+  object-fit:cover
+}
+.qrBox{
+  width:120px;height:120px;
+  border:2px solid #000;
+  display:flex;
+  align-items:center;
+  justify-content:center
+}
+
+/* SIGN */
+.signBox{text-align:center;height:80px}
+.publishDate{font-size:12px;margin-top:6px}
+.actionBtn button{padding:8px 16px;margin:6px}
+
+@media print{
+  body{background:#fff}
+  #loginBox,.actionBtn{display:none}
+  .container{border:none;margin:0;padding:0}
+  @page{size:A4;margin:15mm}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- LOGIN -->
+<div id="loginBox" class="loginWrapper">
+  <div class="schoolPanel">
+    <h2>DAV PUBLIC SCHOOL</h2>
+    <p>Pagar, Keredari, Hazaribagh<br><b>CBSE Affiliated</b></p>
+    <b>Online Result Portal</b>
+  </div>
+  <div class="studentPanel">
+    <h3>Student Login</h3>
+    Roll Number<br>
+    <input id="roll"><br><br>
+    Date of Birth<br>
+    <input type="date" id="dob"><br><br>
+    <button onclick="login()">View Result</button>
+  </div>
+</div>
+
+<!-- RESULT CARD -->
+<div id="card" style="display:none">
+
+<div class="header">
+  <div class="logo">LOGO</div>
+  <div class="center">
+    <h2>DAV PUBLIC SCHOOL</h2>
+    <h4>ANNUAL EXAMINATION RESULT (2024–25)</h4>
+  </div>
+</div>
+
+<table>
+<tr>
+  <td><b>Roll No</b><br><span id="rno"></span></td>
+  <td><b>Class</b><br>X</td>
+  <td rowspan="4">
+    <div class="photoQrBox">
+      <img id="stuPhoto">
+      <div class="qrBox"><canvas id="qrCode"></canvas></div>
+      <small>Scan to Verify</small>
+    </div>
+  </td>
+</tr>
+<tr>
+  <td><b>Student Name</b><br><span id="rname"></span></td>
+  <td><b>Section</b><br>A</td>
+</tr>
+<tr>
+  <td><b>Father’s Name</b><br><span id="rfather"></span></td>
+  <td><b>Mother’s Name</b><br><span id="rmother"></span></td>
+</tr>
+<tr>
+  <td><b>DOB</b><br><span id="db"></span></td>
+  <td></td>
+</tr>
+</table>
+
+<h3>SUBJECT WISE MARKS</h3>
+<table>
+<tr>
+  <th>Subject Name</th>
+  <th>Max Marks</th>
+  <th>Obtained Marks</th>
+</tr>
+<tr><td>Hindi</td><td>100</td><td id="m1"></td></tr>
+<tr><td>English</td><td>100</td><td id="m2"></td></tr>
+<tr><td>Maths</td><td>100</td><td id="m3"></td></tr>
+<tr><td>Science</td><td>100</td><td id="m4"></td></tr>
+<tr>
+  <th>Total</th>
+  <th>400</th>
+  <th id="total"></th>
+</tr>
+</table>
+
+<table>
+<tr>
+  <th>Obtained Marks</th>
+  <th>Percentage</th>
+  <th>Grade</th>
+  <th>Division</th>
+</tr>
+<tr>
+  <td id="obt"></td>
+  <td id="per"></td>
+  <td id="grade"></td>
+  <td id="div"></td>
+</tr>
+</table>
+
+<table>
+<tr>
+  <td class="signBox">
+    <div style="margin-top:40px;border-top:1px solid #000">Class Teacher</div>
+    <div class="publishDate"><b>Result Publish Date:</b> 15 February 2025</div>
+  </td>
+  <td class="signBox">
+    <div style="margin-top:40px;border-top:1px solid #000">Principal</div>
+  </td>
+</tr>
+</table>
+
+<div class="actionBtn center">
+  <button onclick="window.print()">🖨 Print</button>
+  <button onclick="window.print()">📄 Download PDF</button>
+</div>
+
+</div>
+</div>
+
+<script>
+const students=[
+ {roll:"101",dob:"2010-01-10",name:"Aarav Kumar",
+  father:"Rajesh Kumar",mother:"Sunita Devi",
+  marks:{h:78,e:82,m:90,s:88}}
+];
+
+function login(){
+ const r=roll.value,d=dob.value;
+ const s=students.find(x=>x.roll===r && x.dob===d);
+ if(!s){alert("Invalid Roll or DOB");return;}
+
+ loginBox.style.display="none";
+ card.style.display="block";
+
+ rno.textContent=s.roll;
+ rname.textContent=s.name;
+ rfather.textContent=s.father;
+ rmother.textContent=s.mother;
+ db.textContent=s.dob;
+
+ m1.textContent=s.marks.h;
+ m2.textContent=s.marks.e;
+ m3.textContent=s.marks.m;
+ m4.textContent=s.marks.s;
+
+ const totalMarks=s.marks.h+s.marks.e+s.marks.m+s.marks.s;
+ total.textContent=totalMarks;
+ obt.textContent=totalMarks;
+
+ const percent=(totalMarks/400*100).toFixed(2);
+ per.textContent=percent+"%";
+
+ let grd="A",division="First Division";
+ if(percent<60){grd="B"}
+ if(percent<45){grd="C";division="Second Division"}
+ if(percent<33){grd="F";division="Fail"}
+
+ grade.textContent=grd;
+ div.textContent=division;
+
+ stuPhoto.src="https://via.placeholder.com/95x115";
+
+ const verifyURL=location.origin+location.pathname+
+ "?verify=1&name="+encodeURIComponent(s.name)+
+ "&father="+encodeURIComponent(s.father)+
+ "&mother="+encodeURIComponent(s.mother)+
+ "&roll="+s.roll+
+ "&class=X&marks="+totalMarks+
+ "&per="+percent+"&grade="+grd;
+
+ new QRious({element:qrCode,size:120,value:verifyURL});
+}
+</script>
+
+</body>
+</html>

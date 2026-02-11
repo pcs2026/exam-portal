@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>DAV Public School – Admit Card</title>
 
-<!-- QR Library -->
+<!-- QR Code Library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 
 <style>
@@ -76,7 +76,7 @@ display:flex;align-items:center;justify-content:center}
   <div class="logo">LOGO</div>
   <div class="center">
     <h2>DAV PUBLIC SCHOOL</h2>
-    <h3>ADMIT CARD (2025–26)</h3>
+    <h3>CLASS X – ADMIT CARD (2025–26)</h3>
   </div>
   <div class="photo"><img id="stuPhoto"></div>
 </div>
@@ -104,52 +104,45 @@ display:flex;align-items:center;justify-content:center}
 </tr>
 </table>
 
-
 <!-- EXAM SCHEDULE -->
-<h3>EXAMINATION SCHEDULE</h3>
+<h3>EXAMINATION SCHEDULE – CLASS X</h3>
 <table>
-<tr>
-  <th>Date</th><th>Day</th><th>Subject</th><th>Time</th>
-</tr>
-<tr>
-  <td>15-03-2026</td><td>Monday</td>
-  <td>English (184)</td><td>10:00 AM – 1:00 PM</td>
-</tr>
-<tr>
-  <td>18-03-2026</td><td>Thursday</td>
-  <td>Science (086)</td><td>10:00 AM – 1:00 PM</td>
-</tr>
-<tr>
-  <td>21-03-2026</td><td>Sunday</td>
-  <td>Mathematics (041)</td><td>10:00 AM – 1:00 PM</td>
-</tr>
-<tr>
-  <td>24-03-2026</td><td>Wednesday</td>
-  <td>Social Science (087)</td><td>10:00 AM – 1:00 PM</td>
-</tr>
-<tr>
-  <td>27-03-2026</td><td>Saturday</td>
-  <td>IT (402)</td><td>10:00 AM – 1:00 PM</td>
-</tr>
+<tr><th>Date</th><th>Day</th><th>Subject</th><th>Time</th></tr>
+<tr><td>15-03-2026</td><td>Monday</td><td>English</td><td>10:00 – 1:00</td></tr>
+<tr><td>18-03-2026</td><td>Thursday</td><td>Science</td><td>10:00 – 1:00</td></tr>
+<tr><td>21-03-2026</td><td>Sunday</td><td>Mathematics</td><td>10:00 – 1:00</td></tr>
+<tr><td>24-03-2026</td><td>Wednesday</td><td>Social Science</td><td>10:00 – 1:00</td></tr>
+<tr><td>27-03-2026</td><td>Saturday</td><td>IT</td><td>10:00 – 1:00</td></tr>
 </table>
 
 <!-- TERMS -->
 <div class="terms">
-<h4>EXAM TERMS & CONDITIONS</h4>
+<h4 class="center">IMPORTANT INSTRUCTIONS / TERMS & CONDITIONS</h4>
 <ul>
-<li>Admit Card & QR verification compulsory.</li>
-<li>Student must report 30 minutes before exam.</li>
-<li>No mobile, smart watch, calculator allowed.</li>
-<li>Only blue/black pen permitted.</li>
-<li>QR Code will be scanned at entry gate.</li>
-<li>Unfair means will cancel examination.</li>
-<li>School authority decision will be final.</li>
+  <li>Student must bring this Admit Card on all examination days.</li>
+  <li>Student should reach the examination centre at least 30 minutes before exam time.</li>
+  <li>No electronic gadgets (mobile, smart watch, calculator, etc.) are allowed.</li>
+  <li>Only pencil / blue or black ball pen is permitted.</li>
+  <li>Misconduct or unfair means will lead to cancellation of examination.</li>
+  <li>Student must follow all instructions given by invigilators.</li>
+  <li>The school authority reserves the right to make any changes if required.</li>
 </ul>
 </div>
 
+<table>
+<tr>
+  <td class="center sign">
+    <img src="sign/teacher.png"><br>Class Teacher
+  </td>
+  <td class="center sign">
+    <img src="sign/principal.png"><br>Principal
+  </td>
+</tr>
+</table>
+
 <div class="actionBtn center">
   <button onclick="window.print()">🖨 Print</button>
-  <button onclick="downloadPDF()">📄 Download PDF</button>
+  <button onclick="window.print()">📄 Download PDF</button>
 </div>
 
 </div>
@@ -181,7 +174,12 @@ function login(){
 
   const verifyURL =
   location.origin + location.pathname +
-  "?verify=1&roll="+s.roll+"&name="+encodeURIComponent(s.name);
+  "?verify=1"+
+  "&roll="+s.roll+
+  "&name="+encodeURIComponent(s.name)+
+  "&father="+encodeURIComponent(s.father)+
+  "&mother="+encodeURIComponent(s.mother)+
+  "&class=X";
 
   new QRious({
     element:qrCode,
@@ -190,20 +188,22 @@ function login(){
   });
 }
 
-/* ONLINE QR VERIFY PAGE */
+/* ONLINE QR VERIFIED PAGE */
 const p=new URLSearchParams(location.search);
 if(p.get("verify")){
   document.body.innerHTML=
-  `<div style="text-align:center;margin-top:70px">
-   <h2>✅ STUDENT VERIFIED</h2>
-   <p><b>Roll No:</b> ${p.get("roll")}</p>
-   <p><b>Name:</b> ${p.get("name")}</p>
-   <p>DAV Public School – CBSE</p>
-   <p style="color:green">Online QR Verification Successful</p>
-   </div>`;
+  `<div style="text-align:center;margin-top:60px">
+    <h2>✅ STUDENT VERIFIED</h2>
+    <p><b>Student Name:</b> ${p.get("name")}</p>
+    <p><b>Father's Name:</b> ${p.get("father")}</p>
+    <p><b>Mother's Name:</b> ${p.get("mother")}</p>
+    <p><b>Roll No:</b> ${p.get("roll")}</p>
+    <p><b>Class:</b> ${p.get("class")}</p>
+    <hr>
+    <p>DAV Public School – CBSE</p>
+    <p style="color:green">Online QR Verification Successful</p>
+  </div>`;
 }
-
-function downloadPDF(){window.print();}
 </script>
 
 </body>

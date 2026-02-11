@@ -176,8 +176,6 @@ td,th{border:1px solid #000;padding:5px;vertical-align:middle}
   <button onclick="window.print()">📄 Download PDF</button>
 </div>
 
-</div>
-</div>
 <script>
 const students=[
  {roll:"101",dob:"2010-01-10",name:"Aarav Kumar",father:"Rajesh Kumar",mother:"Sunita Devi",sec:"A",gender:"Male"},
@@ -200,22 +198,39 @@ function login(){
   rsec.textContent=s.sec;
   rgender.textContent=s.gender;
   db.textContent=s.dob;
-
   stuPhoto.src="photo/"+s.roll+".jpg";
 
   const verifyURL =
   location.origin + location.pathname +
-  "?verify=1&roll="+s.roll+
+  "?verify=1"+
+  "&roll="+s.roll+
   "&name="+encodeURIComponent(s.name)+
   "&father="+encodeURIComponent(s.father)+
   "&mother="+encodeURIComponent(s.mother)+
   "&class=X";
 
   new QRious({
-    element: qrCode,
-    size: 90,
-    value: verifyURL
+    element:qrCode,
+    size:95,
+    value:verifyURL
   });
+}
+
+/* ONLINE QR VERIFIED PAGE */
+const p=new URLSearchParams(location.search);
+if(p.get("verify")){
+  document.body.innerHTML=
+  `<div style="text-align:center;margin-top:60px">
+    <h2>✅ STUDENT VERIFIED</h2>
+    <p><b>Student Name:</b> ${p.get("name")}</p>
+    <p><b>Father's Name:</b> ${p.get("father")}</p>
+    <p><b>Mother's Name:</b> ${p.get("mother")}</p>
+    <p><b>Roll No:</b> ${p.get("roll")}</p>
+    <p><b>Class:</b> ${p.get("class")}</p>
+    <hr>
+    <p>DAV Public School – CBSE</p>
+    <p style="color:green">Online QR Verification Successful</p>
+  </div>`;
 }
 </script>
 

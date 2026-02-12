@@ -6,40 +6,37 @@
 <title>JPSC History Online Exam</title>
 
 <style>
-body{font-family:Arial;background:#f2f2f2}
-.container{width:1000px;max-width:100%;margin:20px auto;background:#fff;padding:20px;border:2px solid #000}
+body{font-family:Arial;background:#f2f2f2;margin:0}
+.container{
+ width:1000px;max-width:100%;
+ margin:20px auto;background:#fff;
+ padding:20px;border:2px solid #000;box-sizing:border-box
+}
 h2{text-align:center}
-input,textarea{padding:6px;width:320px;max-width:100%;margin-bottom:10px}
-button{padding:8px 18px;font-weight:bold;margin:5px;cursor:pointer}
+input,textarea{padding:8px;width:320px;max-width:100%;margin-bottom:10px}
+textarea{height:70px}
+button{padding:10px 18px;font-weight:bold;margin:5px;cursor:pointer}
 
 #loginBox,#detailsBox,#examBox,#resultBox,#analysisBox{display:none}
 
 .question{margin:15px 0;font-size:16px}
 .options{margin-left:20px}
-.options label{
- display:flex;
- align-items:center;
- gap:4px;
- cursor:pointer;
-}
+.options label{display:flex;align-items:center;gap:6px;margin:6px 0}
 
-.timer{font-size:18px;color:red;text-align:right}
-.warning{color:red;font-weight:bold}
+.timer{font-size:18px;color:red;text-align:right;font-weight:bold}
+.warning{text-align:center;color:red;font-weight:bold}
 
 .btnBox{text-align:center;margin-top:20px}
-
-/* hidden */
-.counterBox{display:none}
 
 .analysis-q{border:1px solid #ccc;padding:10px;margin-bottom:10px}
 .correct{color:green;font-weight:bold}
 .wrong{color:red;font-weight:bold}
 .notattempt{color:gray;font-weight:bold}
 
-/* mobile */
 @media(max-width:768px){
- .btnBox button{width:100%}
- .timer{text-align:center}
+ .container{margin:0;border:none;min-height:100vh}
+ .btnBox{position:sticky;bottom:0;background:#fff;padding:10px 0;border-top:1px solid #ccc}
+ .btnBox button{width:32%}
  .options{margin-left:5px}
 }
 </style>
@@ -51,10 +48,7 @@ button{padding:8px 18px;font-weight:bold;margin:5px;cursor:pointer}
 <!-- LOGIN -->
 <div id="loginBox">
 <h2>Student Login</h2>
-
-<!-- 🔒 FIXED LOGIN ID -->
-<input id="sid" value="JPSC2026" readonly><br>
-
+<input id="sid" placeholder="Login ID"><br>
 <input type="date" id="dob"><br>
 <button onclick="doLogin()">Login</button>
 </div>
@@ -72,20 +66,13 @@ oninput="this.value=this.value.replace(/[^0-9]/g,'')"><br>
 
 <!-- EXAM -->
 <div id="examBox">
-
-<div class="counterBox">
-Copy: <span id="lc">0</span> |
-Screenshot: <span id="ls">0</span> |
-Tab: <span id="lt">0</span>
-</div>
-
 <div class="timer">⏱ <span id="time">120:00</span></div>
 <p class="warning">⚠ Exam rules strictly monitored</p>
 
 <div id="questionBox"></div>
 
 <div class="btnBox">
-<button onclick="prevQ()">⬅ Previous</button>
+<button onclick="prevQ()">⬅ Prev</button>
 <button onclick="nextQ()">Next ➡</button>
 <button onclick="submitExam()">Submit</button>
 </div>
@@ -104,19 +91,18 @@ Tab: <span id="lt">0</span>
 <p><b>Final Score: <span id="score"></span></b></p>
 
 <hr>
-<h3>🚫 Malpractice Monitoring Report</h3>
-Copy Attempts: <b id="copyCount"></b><br>
-Screenshot Attempts: <b id="shotCount"></b><br>
-Tab / App Change Attempts: <b id="tabCount"></b>
+<h3>🚫 Malpractice Monitoring</h3>
+Copy: <b id="copyCount"></b> |
+Screenshot: <b id="shotCount"></b> |
+Tab: <b id="tabCount"></b>
 </div>
 
 <div style="text-align:center">
 <button id="analysisBtn" style="display:none" onclick="showAnalysis()">
-📊 Total Question Analysis
+📊 Question Analysis
 </button>
 </div>
 
-<!-- ANALYSIS -->
 <div id="analysisBox">
 <h2>Question Wise Analysis</h2>
 <div id="analysisContent"></div>
@@ -125,37 +111,23 @@ Tab / App Change Attempts: <b id="tabCount"></b>
 </div>
 
 <script>
-/* ---------- MALPRACTICE ---------- */
-let copyC=0, shotC=0, tabC=0, autoSubmitted=false;
+let copyC=0,shotC=0,tabC=0,autoSubmitted=false;
 function checkAutoSubmit(){
- if(copyC + shotC + tabC >= 3 && !autoSubmitted){
-  autoSubmitted=true;
-  submitExam();
+ if(copyC+shotC+tabC>=3 && !autoSubmitted){
+  autoSubmitted=true;submitExam();
  }
 }
 document.addEventListener("copy",()=>{copyC++;checkAutoSubmit();});
-document.addEventListener("contextmenu",e=>{e.preventDefault();copyC++;checkAutoSubmit();});
-document.addEventListener("keydown",e=>{
- if(e.ctrlKey && ["c","v","s"].includes(e.key.toLowerCase())){
-  e.preventDefault();
-  e.key.toLowerCase()==="s"?shotC++:copyC++;
-  checkAutoSubmit();
- }
-});
 document.addEventListener("visibilitychange",()=>{if(document.hidden){tabC++;checkAutoSubmit();}});
 window.addEventListener("blur",()=>{tabC++;checkAutoSubmit();});
 
-/* ---------- LOGIN ---------- */
 loginBox.style.display="block";
 function doLogin(){
- const FIXED_ID="JPSC2026";
- if(sid.value!==FIXED_ID){alert("Invalid Login ID");return;}
  if(!dob.value){alert("Select DOB");return;}
  loginBox.style.display="none";
  detailsBox.style.display="block";
 }
 
-/* ---------- QUESTIONS ---------- */
 const qlist=[
  {q:"सिंधु सभ्यता की खोज किस वर्ष हुई?",o:["1901","1911","1921","1931"],a:2},
  {q:"हड़प्पावासी किस धातु से परिचित नहीं थे?",o:["तांबा","कांसा","सोना","लोहा"],a:3},
@@ -209,11 +181,11 @@ const qlist=[
  
 
  {q:"चंद्रगुप्त मौर्य के गुरु कौन थे?",o:["मेगस्थनीज","चाणक्य","पतंजलि","बाणभट्ट"],a:1}
+
 ];
 
 let currentQ=0,answers={},timeLeft=120*60,timer;
 
-/* ---------- EXAM ---------- */
 function startExam(){
  detailsBox.style.display="none";
  examBox.style.display="block";
@@ -225,7 +197,7 @@ function loadQuestion(){
  let q=qlist[currentQ];
  let html=`<div class="question"><b>Q${currentQ+1}. ${q.q}</b></div><div class="options">`;
  q.o.forEach((op,i)=>{
-  html+=`<label><input type="radio" name="opt" value="${i}" ${answers[currentQ]==i?'checked':''}>${op}</label>`;
+  html+=`<label><input type="radio" name="opt" value="${i}" ${answers[currentQ]==i?'checked':''}> ${op}</label>`;
  });
  html+=`</div>`;
  questionBox.innerHTML=html;
@@ -241,25 +213,19 @@ function prevQ(){saveAns();if(currentQ>0){currentQ--;loadQuestion();}}
 function runTimer(){
  let m=Math.floor(timeLeft/60),s=timeLeft%60;
  time.innerText=`${m}:${s<10?'0'+s:s}`;
- timeLeft--; if(timeLeft<0)submitExam();
+ timeLeft--;if(timeLeft<0)submitExam();
 }
 
-/* ---------- RESULT ---------- */
 function submitExam(){
  clearInterval(timer);
  examBox.style.display="none";
  resultBox.style.display="block";
-
  let attempted=0,correct=0;
  qlist.forEach((q,i)=>{
-  if(answers[i]!=null){
-   attempted++;
-   if(answers[i]==q.a)correct++;
-  }
+  if(answers[i]!=null){attempted++;if(answers[i]==q.a)correct++;}
  });
  let wrong=attempted-correct;
  let negative=wrong*0.25;
-
  rname.innerText=sname.value;
  rfname.innerText=fname.value;
  totalQ.innerText=qlist.length;
@@ -268,15 +234,12 @@ function submitExam(){
  wrongQ.innerText=wrong;
  negativeM.innerText=negative.toFixed(2);
  score.innerText=(correct-negative).toFixed(2);
-
  copyCount.innerText=copyC;
  shotCount.innerText=shotC;
  tabCount.innerText=tabC;
-
- setTimeout(()=>analysisBtn.style.display="inline-block",30000);
+ setTimeout(()=>analysisBtn.style.display="inline-block",15000);
 }
 
-/* ---------- ANALYSIS ---------- */
 function showAnalysis(){
  analysisBox.style.display="block";
  analysisContent.innerHTML="";
@@ -289,8 +252,7 @@ function showAnalysis(){
   <div class="analysis-q">
    <b>Q${i+1}. ${q.q}</b><br>
    Your Answer: <span class="${cls}">${ua!=null?q.o[ua]:"—"}</span><br>
-   Correct Answer: <span class="correct">${q.o[q.a]}</span><br>
-   Result: <span class="${cls}">${status}</span>
+   Correct Answer: <span class="correct">${q.o[q.a]}</span>
   </div>`;
  });
 }

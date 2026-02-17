@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DAV Public School – Admit Card</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+
+<style>
+body{font-family:Arial;background:#e6e6e6}
+.container{
+  width:170mm;min-height:257mm;background:#fff;
+  margin:10px auto;padding:10mm;border:2px solid #000
+}
+h2,h3,h4,h5{text-align:center;margin:4px}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+td,th{border:1px solid #000;padding:5px}
+.center{text-align:center}
+
+/* LOGIN */
+.loginWrapper{display:flex;border:2px solid #000}
+.schoolPanel{width:45%;background:#f2f6ff;padding:20px;text-align:center;border-right:2px solid #000}
+.studentPanel{width:55%;padding:20px}
+
+/* HEADER */
+.header{display:grid;grid-template-columns:90px auto;align-items:center}
+.logo{
+  width:80px;height:80px;border:1px solid #000;
+  display:flex;align-items:center;justify-content:center
+}
+
+/* PHOTO + QR */
+.photoQrBox{display:flex;flex-direction:column;align-items:center;gap:6px}
+.photoQrBox img{width:95px;height:115px;border:2px solid #000}
+.qrBox{
+  width:100px;height:100px;border:2px solid #000;
+  display:flex;align-items:center;justify-content:center
+}
+
+.sign img{height:40px}
+.actionBtn button{padding:8px 16px;margin:6px}
+
+/* 🌸 Flower Animation Background (Login Only) */
+.flowerBg{
+  position:absolute;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  top:0;
+  left:0;
+  z-index:0;
+}
+
+.flower{
+  position:absolute;
+  top:-50px;
+  animation:fall linear infinite;
+  opacity:0.8;
+}
+
+@keyframes fall{
+  0%{transform:translateY(0) rotate(0deg);}
+  100%{transform:translateY(110vh) rotate(360deg);}
+}
+
+#loginBox{
+  position:relative;
+  z-index:2;
+  background:white;
+}
+
+@media print{
+ body{background:#fff}
+ #loginBox,.actionBtn{display:none}
+ .container{border:none;margin:0;padding:0}
+ @page{size:A4 portrait;margin:15mm}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- Flower Animation -->
+<div class="flowerBg" id="flowerBg"></div>
+
+<!-- LOGIN -->
+<div id="loginBox" class="loginWrapper">
+  <div class="schoolPanel">
+    <h2>DAV PUBLIC SCHOOL</h2>
+    <p>Pagar, Keredari, Hazaribagh<br><b>Affiliated to CBSE</b></p>
+    <b>Online Admit Card Portal</b>
+  </div>
+
+  <div class="studentPanel">
+    <h3>Student Login</h3>
+
+    Class<br>
+    <select id="cls">
+      <option value="">-- Select Class --</option>
+      <option>Nursery</option><option>LKG</option><option>UKG</option>
+      <option>1</option><option>2</option><option>3</option>
+      <option>4</option><option>5</option><option>6</option>
+      <option>7</option><option>8</option>
+    </select><br><br>
+
+    Roll Number<br>
+    <input id="roll"><br><br>
+
+    Date of Birth<br>
+    <input type="date" id="dob"><br><br>
+
+    <button onclick="login()">View Admit Card</button>
+  </div>
+</div>
+
+<!-- ADMIT CARD -->
+<div id="card" style="display:none">
+
+<div class="header">
+  <div class="logo">LOGO</div>
+  <div class="center">
+    <h2>DAV PUBLIC SCHOOL</h2>
+    <h4>Affiliated to CBSE</h4>
+    <h5>ADMIT CARD (2025–26)</h5>
+  </div>
+</div>
+
+<table>
+<tr>
+  <td><b>Roll No:</b> <span id="rno"></span></td>
+  <td><b>Class:</b> <span id="rclass"></span></td>
+  <td rowspan="4" class="center">
+    <div class="photoQrBox">
+      <img id="stuPhoto" src="photo/default.jpg">
+      <img id="stuSign" style="width:140px;height:25px;border:1px solid #000">
+      <div class="qrBox"><canvas id="qrCode"></canvas></div>
+      <small>Scan to Verify</small>
+    </div>
+  </td>
+</tr>
+<tr>
+  <td><b>Student Name:</b> <span id="rname"></span></td>
+  <td><b>Section:</b> <span id="rsec"></span></td>
+</tr>
+<tr>
+  <td><b>Father’s Name:</b> <span id="rfather"></span></td>
+  <td><b>Mother’s Name:</b> <span id="rmother"></span></td>
+</tr>
+<tr>
+  <td><b>DOB:</b> <span id="db"></span></td>
+  <td><b>Gender:</b> <span id="rgender"></span></td>
+</tr>
+</table>
+
+<!-- TERMS -->
+<div class="terms">
+<h3 class="center">IMPORTANT INSTRUCTIONS / TERMS & CONDITIONS</h3>
+<ul>
+  <li>Student must bring this Admit Card on all examination days.</li>
+  <li>Student should reach the examination centre at least 30 minutes before exam time.</li>
+  <li>No electronic gadgets (mobile, smart watch, calculator, etc.) are allowed.</li>
+  <li>Misconduct or unfair means will lead to cancellation of examination.</li>
+  <li>Student must follow all instructions given by invigilators.</li>
+  <li>The school authority reserves the right to make any changes if required.</li>
+</ul>
+</div>
+
+<table>
+<tr>
+  <td class="center sign">
+    <img src="sign/teacher.png"><br>Class Teacher
+  </td>
+  <td class="center sign">
+    <img src="sign/principal.png"><br>Principal
+  </td>
+</tr>
+</table>
+
+<div class="actionBtn center">
+  <button type="button" onclick="window.print()">🖨 Print</button>
+  <button type="button" onclick="window.print()">📄 Download PDF</button>
+</div>
+
+<script>
+/* STUDENT DATABASE */
+const students=[
+{roll:"NUR01",dob:"2019-01-01",class:"Nursery",name:"Nursery Student 1",father:"Sohan Prasad Kushwaha",mother:"Malti Devi",sec:"A",gender:"Male"},
+{roll:"LKG01",dob:"2018-01-01",class:"LKG",name:"LKG Student 1",father:"Father 1",mother:"Mother 1",sec:"A",gender:"Female"},
+{roll:"UKG01",dob:"2017-01-01",class:"UKG",name:"UKG Student 1",father:"Father 1",mother:"Mother 1",sec:"A",gender:"Male"},
+{roll:"101",dob:"2016-01-01",class:"1",name:"Class 1 Student 1",father:"Father 1",mother:"Mother 1",sec:"A",gender:"Male"},
+{roll:"801",dob:"2009-01-01",class:"8",name:"Class 8 Student 1",father:"Father 8",mother:"Mother 8",sec:"A",gender:"Female"}
+];
+
+/* EXAM SCHEDULE (class-wise) */
+const examSchedules = {
+  "Nursery":[
+    {date:"15-03-2026",day:"Monday",subject:"Drawing",time:"10:00 – 11:00"},
+    {date:"18-03-2026",day:"Thursday",subject:"Rhymes",time:"10:00 – 11:00"}
+  ],
+  "LKG":[
+    {date:"16-03-2026",day:"Tuesday",subject:"English",time:"10:00 – 11:30"},
+    {date:"19-03-2026",day:"Friday",subject:"Math",time:"10:00 – 11:30"}
+  ],
+  "1":[
+    {date:"15-03-2026",day:"Monday",subject:"English",time:"10:00 – 1:00"},
+    {date:"18-03-2026",day:"Thursday",subject:"Science",time:"10:00 – 1:00"}
+  ],
+  "8":[
+    {date:"15-03-2026",day:"Monday",subject:"English",time:"10:00 – 1:00"},
+    {date:"18-03-2026",day:"Thursday",subject:"Science",time:"10:00 – 1:00"},
+    {date:"21-03-2026",day:"Sunday",subject:"Mathematics",time:"10:00 – 1:00"}
+  ]
+};
+
+/* Flower Generator */
+const flowerBg = document.getElementById("flowerBg");
+if(flowerBg){
+  for(let i=0;i<30;i++){
+    let flower=document.createElement("div");
+    flower.className="flower";
+    flower.innerHTML=["🌸","📚","✏️","🎒","🪔","🌹"][Math.floor(Math.random()*6)];
+    flower.style.left=Math.random()*100+"%";
+    flower.style.animationDuration=(5+Math.random()*5)+"s";
+    flower.style.fontSize=(18+Math.random()*20)+"px";
+    flowerBg.appendChild(flower);
+  }
+}
+
+/* LOGIN FUNCTION */
+function login() {
+  const rollInput = document.getElementById("roll");
+  const dobInput = document.getElementById("dob");
+  const loginBox = document.getElementById("loginBox");
+  const card = document.getElementById("card");
+
+  const r = rollInput.value.trim();
+  const d = dobInput.value;
+
+  const s = students.find(x => x.roll === r && x.dob === d);
+
+  if (!s) {
+    alert("Invalid Roll Number or DOB");
+    return;
+  }
+
+  // Hide login & flower animation
+  loginBox.style.display = "none";
+  document.getElementById("flowerBg").style.display = "none";
+  card.style.display = "block";
+
+  // Fill student info
+  document.getElementById("rno").textContent = s.roll;
+  document.getElementById("rclass").textContent = s.class;
+  document.getElementById("rname").textContent = s.name;
+  document.getElementById("rfather").textContent = s.father;
+  document.getElementById("rmother").textContent = s.mother;
+  document.getElementById("rsec").textContent = s.sec;
+  document.getElementById("rgender").textContent = s.gender;
+  document.getElementById("db").textContent = s.dob;
+
+  // Student photo
+  document.getElementById("stuPhoto").src = "photo/" + s.roll + ".jpg";
+
+  // QR Code
+  const verifyURL =
+    location.origin + location.pathname +
+    "?verify=1" +
+    "&roll=" + s.roll +
+    "&name=" + encodeURIComponent(s.name) +
+    "&father=" + encodeURIComponent(s.father) +
+    "&mother=" + encodeURIComponent(s.mother) +
+    "&class=" + s.class;
+
+  new QRious({
+    element: document.getElementById("qrCode"),
+    size: 99,
+    value: verifyURL
+  });
+
+  // --- NEW: Generate Exam Schedule Table ---
+  const exams = examSchedules[s.class] || [];
+  let examHTML = '<h3 class="center">EXAM SCHEDULE</h3>';
+  if (exams.length > 0) {
+    examHTML += `<table>
+      <tr>
+        <th>Date</th>
+        <th>Day</th>
+        <th>Subject</th>
+        <th>Time</th>
+      </tr>`;
+    exams.forEach(ex => {
+      examHTML += `<tr>
+        <td>${ex.date}</td>
+        <td>${ex.day}</td>
+        <td>${ex.subject}</td>
+        <td>${ex.time}</td>
+      </tr>`;
+    });
+    examHTML += '</table>';
+  } else {
+    examHTML += '<p class="center">No exam schedule available for this class.</p>';
+  }
+
+  // Insert into card above terms
+  const cardDiv = document.getElementById("card");
+  const div = document.createElement("div");
+  div.className = "examSchedule";
+  div.innerHTML = examHTML;
+  cardDiv.insertBefore(div, cardDiv.querySelector(".terms"));
+}
+
+/* ONLINE QR VERIFIED PAGE */
+const p=new URLSearchParams(location.search);
+if(p.get("verify")){
+  document.body.innerHTML=
+  `<div style="text-align:center;margin-top:60px">
+    <h2>✅ STUDENT VERIFIED</h2>
+    <p><b>Student Name:</b> ${p.get("name")}</p>
+    <p><b>Father's Name:</b> ${p.get("father")}</p>
+    <p><b>Mother's Name:</b> ${p.get("mother")}</p>
+    <p><b>Roll No:</b> ${p.get("roll")}</p>
+    <p><b>Class:</b> ${p.get("class")}</p>
+    <hr>
+    <p>DAV Public School – CBSE</p>
+    <p style="color:green">Online QR Verification Successful</p>
+    <div class="actionBtn center">
+      <button onclick="window.print()">🖨 Print</button>
+    </div>
+  </div>`;
+}
+</script>
+
+</body>
+</html>
